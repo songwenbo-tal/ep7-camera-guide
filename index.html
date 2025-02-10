@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>EP7相机设置助手</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 40px;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 40px;
+        }
+
+        .search-box {
+            margin: 30px auto;
+            display: flex;
+            gap: 15px;
+            max-width: 800px;
+        }
+
+        input {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            padding: 15px 30px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-box {
+            display: none;
+            margin: 30px auto;
+            padding: 30px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            max-width: 800px;
+        }
+
+        .settings-section, .steps-section, .tips-section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .error {
+            color: #dc3545;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        ul, ol {
+            padding-left: 20px;
+            counter-reset: step-counter;
+        }
+
+        ol li {
+            list-style: none;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        ol li:before {
+            content: counter(step-counter);
+            counter-increment: step-counter;
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+        li {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        /* 添加风格列表样式 */
+        .style-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 800px;
+        }
+
+        .style-tag {
+            padding: 8px 16px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .style-tag:hover {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .divider {
+            width: 100%;
+            max-width: 800px;
+            margin: 20px auto;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+            position: relative;
+        }
+
+        .divider span {
+            background-color: white;
+            padding: 0 10px;
+            color: #6c757d;
+            position: relative;
+            top: -12px;
+        }
+
+        .recommendations-section {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .recommendations-section ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .recommendations-section li {
+            margin: 20px 0;
+            padding: 15px;
+            background-color: white;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .recommendations-section a {
+            color: #007bff;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .recommendations-section a:hover {
+            text-decoration: underline;
+        }
+
+        /* 添加移动端适配样式 */
+        @media screen and (max-width: 844px) {
+            body {
+                padding: 20px 15px;
+            }
+
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+                margin-bottom: 20px;
+            }
+
+            .intro p {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            /* 优化标签列表在移动端的显示 */
+            .style-list {
+                gap: 8px;
+                margin: 15px auto;
+            }
+
+            .style-tag {
+                padding: 6px 12px;
+                font-size: 14px;
+                /* 确保在 iPhone 上点击有反馈 */
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* 优化搜索框在移动端的显示 */
+            .search-box {
+                flex-direction: column;
+                gap: 10px;
+                margin: 20px auto;
+            }
+
+            input {
+                width: 100%;
+                padding: 12px;
+                font-size: 16px; /* 避免 iOS 自动缩放 */
+            }
+
+            button {
+                width: 100%;
+                padding: 12px;
+            }
+
+            /* 优化结果显示 */
+            .result-box {
+                padding: 15px;
+                margin: 20px auto;
+            }
+
+            .settings-section, .steps-section, .tips-section {
+                padding: 15px;
+                margin: 15px 0;
+            }
+
+            /* 优化推荐资源显示 */
+            .recommendations-section {
+                padding: 15px;
+            }
+
+            .recommendations-section li {
+                padding: 12px;
+                margin: 15px 0;
+            }
+
+            /* 优化列表显示 */
+            ul, ol {
+                padding-left: 15px;
+            }
+
+            li {
+                font-size: 14px;
+                margin: 8px 0;
+            }
+
+            /* 添加安全区域适配 */
+            @supports (padding: max(0px)) {
+                body {
+                    padding-left: max(15px, env(safe-area-inset-left));
+                    padding-right: max(15px, env(safe-area-inset-right));
+                    padding-bottom: max(20px, env(safe-area-inset-bottom));
+                }
+            }
+
+            /* 优化点击区域 */
+            button, .style-tag, a {
+                min-height: 44px; /* 确保可点击区域足够大 */
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            /* 优化字体大小 */
+            h2 {
+                font-size: 20px;
+            }
+
+            h3 {
+                font-size: 18px;
+            }
+
+            /* 优化分隔线 */
+            .divider {
+                margin: 15px auto;
+            }
+
+            .divider span {
+                font-size: 14px;
+            }
+        }
+
+        /* 针对 iPhone 15 Pro 的刘海屏适配 */
+        @supports (padding-top: env(safe-area-inset-top)) {
+            .container {
+                padding-top: max(40px, env(safe-area-inset-top));
+            }
+        }
+
+        /* 防止元素被键盘遮挡 */
+        @media screen and (max-height: 600px) {
+            .container {
+                min-height: 100vh;
+                padding-bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>EP7相机设置助手</h1>
+        <div class="intro">
+            <p>欢迎使用EP7相机设置助手！选择或搜索您想要实现的拍摄效果，获取详细的相机参数设置指南。</p>
+        </div>
+        <div class="style-list">
+            <div class="style-tag" onclick="selectStyle('富士风格人像')">富士风格人像</div>
+            <div class="style-tag" onclick="selectStyle('街拍黑白')">街拍黑白</div>
+            <div class="style-tag" onclick="selectStyle('夜景')">夜景</div>
+            <div class="style-tag" onclick="selectStyle('日系胶片')">日系胶片</div>
+            <div class="style-tag" onclick="selectStyle('ins风网红照')">ins风网红照</div>
+            <div class="style-tag" onclick="selectStyle('复古电影感')">复古电影感</div>
+            <div class="style-tag" onclick="selectStyle('美食摄影')">美食摄影</div>
+            <div class="style-tag" onclick="selectStyle('街头潮拍')">街头潮拍</div>
+        </div>
+        <div class="divider">
+            <span>或者</span>
+        </div>
+        <div class="search-box">
+            <input 
+                type="text" 
+                id="queryInput" 
+                placeholder="输入您想要的拍摄效果关键词"
+            >
+            <button onclick="getSettings()">搜索设置</button>
+        </div>
+        <div id="result" class="result-box"></div>
+    </div>
+
+    <script>
+        // 预设的相机设置数据
+        const cameraSettings = {
+            "富士风格人像": {
+                "settings": {
+                    "拍摄模式": "A档（光圈优先）",
+                    "光圈": "F1.8-2.8",
+                    "ISO": "200",
+                    "白平衡": "自动",
+                    "相片效果": "自然",
+                    "色调": "暖色",
+                    "锐度": "-1",
+                    "对比度": "-1"
+                },
+                "steps": [
+                    "将模式转盘转到A档（光圈优先模式）",
+                    "按下OK按钮，进入超级控制面板",
+                    "使用方向键选择光圈值，设置为F1.8-2.8",
+                    "选择ISO设置为200",
+                    "进入菜单 → 拍摄菜单1 → 相片效果设置",
+                    "选择'自然'模式，按OK进入详细设置",
+                    "将锐度和对比度都调至-1档",
+                    "色调调整为暖色系"
+                ],
+                "tips": "1. 选择背景干净的环境拍摄\n2. 尽量在黄昏或清晨拍摄，光线更柔和\n3. 注意人物和背景的距离，距离越远背景虚化效果越好\n4. 可以使用EP7的人脸识别功能辅助对焦"
+            },
+            "街拍黑白": {
+                "settings": {
+                    "拍摄模式": "P档（程序自动）",
+                    "ISO": "自动（上限1600）",
+                    "白平衡": "自动",
+                    "相片效果": "黑白",
+                    "对比度": "+1",
+                    "锐度": "+1",
+                    "颗粒": "低"
+                },
+                "steps": [
+                    "将模式转盘转到P档",
+                    "按下OK按钮进入超级控制面板",
+                    "设置ISO为自动，并在菜单中设置上限为1600",
+                    "进入菜单 → 拍摄菜单1 → 相片效果设置",
+                    "选择'黑白'模式",
+                    "将对比度和锐度调整为+1",
+                    "开启颗粒效果并设置为低"
+                ],
+                "tips": "1. 注意光影的对比\n2. 可以使用EP7的实时取景预览黑白效果\n3. 建议开启静音拍摄模式\n4. 对焦可以使用区域对焦模式"
+            },
+            "夜景": {
+                "settings": {
+                    "拍摄模式": "M档（手动模式）",
+                    "光圈": "F8-F11",
+                    "快门速度": "2-30秒",
+                    "ISO": "200",
+                    "白平衡": "钨丝灯",
+                    "防抖": "关闭",
+                    "对焦模式": "手动对焦"
+                },
+                "steps": [
+                    "将相机固定在三脚架上",
+                    "将模式转盘转到M档",
+                    "设置光圈为F8-F11（获得星芒效果）",
+                    "设置ISO为200（保证画质）",
+                    "调整快门速度（视现场亮度而定）",
+                    "关闭防抖功能（使用三脚架时）",
+                    "切换至手动对焦",
+                    "使用2秒延时或遥控器拍摄"
+                ],
+                "tips": "1. 必须使用三脚架\n2. 蓝调时分是拍摄城市夜景的最佳时机\n3. 可以使用实时取景放大对焦\n4. 建议使用遥控器或自拍延时避免抖动"
+            },
+            "日系胶片": {
+                "settings": {
+                    "拍摄模式": "A档（光圈优先）",
+                    "光圈": "F2.0-F2.8",
+                    "ISO": "400",
+                    "白平衡": "阴天",
+                    "相片效果": "自然",
+                    "色调": "暖色",
+                    "锐度": "-2",
+                    "对比度": "-1",
+                    "饱和度": "-1"
+                },
+                "steps": [
+                    "将模式转盘转到A档",
+                    "设置光圈为F2.0-2.8",
+                    "将ISO调至400",
+                    "白平衡选择阴天模式",
+                    "进入菜单 → 相片效果设置 → 自然",
+                    "降低锐度至-2",
+                    "降低对比度和饱和度至-1",
+                    "调整色调偏向暖色系"
+                ],
+                "tips": "1. 选择背光或侧逆光拍摄\n2. 注意保持画面干净整洁\n3. 可以尝试逆光拍摄制造光晕效果\n4. 后期可以适当提高阴影部分细节"
+            },
+            "ins风网红照": {
+                "settings": {
+                    "拍摄模式": "A档（光圈优先）",
+                    "光圈": "F1.8-F2.8",
+                    "ISO": "200",
+                    "白平衡": "晴天",
+                    "相片效果": "鲜艳",
+                    "高光": "-1",
+                    "阴影": "+1",
+                    "锐度": "+1"
+                },
+                "steps": [
+                    "切换至A档模式",
+                    "设置大光圈F1.8-2.8",
+                    "ISO设为200",
+                    "选择晴天白平衡",
+                    "进入相片效果设置选择鲜艳",
+                    "降低高光，提升阴影",
+                    "适当提高锐度"
+                ],
+                "tips": "1. 选择光线充足的环境\n2. 背景尽量简单干净\n3. 可以使用人像模式辅助对焦\n4. 注意拍摄角度，通常45度仰拍效果更好"
+            },
+            "复古电影感": {
+                "settings": {
+                    "拍摄模式": "M档（手动模式）",
+                    "光圈": "F2.8-F4",
+                    "快门速度": "1/60",
+                    "ISO": "400-800",
+                    "白平衡": "自动",
+                    "相片效果": "自然",
+                    "色调": "冷色",
+                    "颗粒感": "中",
+                    "对比度": "+1"
+                },
+                "steps": [
+                    "将模式转盘转到M档",
+                    "设置中等光圈F2.8-4",
+                    "快门速度固定在1/60",
+                    "ISO设置在400-800之间",
+                    "进入相片效果设置选择自然",
+                    "调整色调偏冷",
+                    "开启中等颗粒感",
+                    "略微提高对比度"
+                ],
+                "tips": "1. 尽量在光线柔和的环境拍摄\n2. 可以尝试逆光拍摄制造剪影\n3. 注意画面构图的电影感\n4. 可以使用手动对焦获得特殊效果"
+            },
+            "美食摄影": {
+                "settings": {
+                    "拍摄模式": "A档（光圈优先）",
+                    "光圈": "F4-F5.6",
+                    "ISO": "400",
+                    "白平衡": "自动",
+                    "相片效果": "鲜艳",
+                    "饱和度": "+1",
+                    "锐度": "+2",
+                    "对焦模式": "S-AF+MF"
+                },
+                "steps": [
+                    "设置A档模式",
+                    "选择F4-5.6的光圈确保食物清晰",
+                    "ISO设置为400",
+                    "选择鲜艳相片效果",
+                    "提高饱和度和锐度",
+                    "使用S-AF+MF对焦模式以便精确对焦",
+                    "开启实时取景以便构图"
+                ],
+                "tips": "1. 尽量使用自然光源\n2. 注意食物的最佳拍摄角度\n3. 可以使用45度俯拍\n4. 注意餐具和装饰品的摆放"
+            },
+            "街头潮拍": {
+                "settings": {
+                    "拍摄模式": "S档（快门优先）",
+                    "快门速度": "1/250-1/500",
+                    "ISO": "自动（上限3200）",
+                    "白平衡": "自动",
+                    "相片效果": "鲜艳",
+                    "对比度": "+2",
+                    "锐度": "+1",
+                    "高光": "-1"
+                },
+                "steps": [
+                    "切换至S档模式",
+                    "设置快门速度在1/250-1/500",
+                    "开启自动ISO",
+                    "选择鲜艳相片效果",
+                    "提高对比度和锐度",
+                    "降低高光以保留细节",
+                    "开启连拍模式"
+                ],
+                "tips": "1. 注意捕捉瞬间动作\n2. 可以尝试不同的低角度拍摄\n3. 利用城市建筑作为构图元素\n4. 可以使用广角拍摄突出环境感"
+            }
+        };
+
+        // 添加点击选择风格的函数
+        function selectStyle(style) {
+            document.getElementById('queryInput').value = style;
+            getSettings();
+        }
+
+        function getSettings() {
+            const query = document.getElementById('queryInput').value.toLowerCase();
+            const resultDiv = document.getElementById('result');
+            
+            if (!query) {
+                resultDiv.innerHTML = '<p class="error">请输入您想要的拍摄效果</p>';
+                resultDiv.style.display = 'block';
+                return;
+            }
+
+            // 查找匹配的设置
+            let matchedStyle = null;
+            let matchedStyleName = null;
+
+            for (const [styleName, styleData] of Object.entries(cameraSettings)) {
+                if (query.includes(styleName)) {
+                    matchedStyle = styleData;
+                    matchedStyleName = styleName;
+                    break;
+                }
+            }
+
+            if (matchedStyle) {
+                resultDiv.innerHTML = `
+                    <h2>${matchedStyleName}设置指南</h2>
+                    <div class="settings-section">
+                        <h3>相机参数：</h3>
+                        <ul>
+                            ${Object.entries(matchedStyle.settings).map(([key, value]) => 
+                                `<li><strong>${key}:</strong> ${value}</li>`
+                            ).join('')}
+                        </ul>
+                    </div>
+                    <div class="steps-section">
+                        <h3>设置步骤：</h3>
+                        <ol>
+                            ${matchedStyle.steps.map(step => `<li>${step}</li>`).join('')}
+                        </ol>
+                    </div>
+                    <div class="tips-section">
+                        <h3>拍摄建议：</h3>
+                        <p>${matchedStyle.tips.split('\n').join('<br>')}</p>
+                    </div>
+                `;
+            } else {
+                // 当没有找到匹配的预设时，提供网络资源推荐
+                const recommendations = getRecommendations(query);
+                resultDiv.innerHTML = `
+                    <p class="error">未找到完全匹配的预设，但您可以参考以下资源：</p>
+                    <div class="recommendations-section">
+                        <h3>推荐资源：</h3>
+                        <ul>
+                            ${recommendations.map(rec => `
+                                <li>
+                                    <strong>${rec.title}</strong><br>
+                                    ${rec.description}<br>
+                                    <a href="${rec.link}" target="_blank">查看详情 →</a>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div class="tips-section">
+                            <h3>通用建议：</h3>
+                            <p>1. 可以在抖音搜索 "#${query} #EP7相机设置" 查看相关视频教程</p>
+                            <p>2. 可以访问 EP7 官方论坛查看其他用户的经验分享</p>
+                            <p>3. 建议先尝试与您需求最接近的预设风格，再根据实际效果调整</p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+
+        // 根据查询词返回推荐资源
+        function getRecommendations(query) {
+            // 这里可以根据不同的查询返回不同的推荐
+            const baseRecommendations = [
+                {
+                    title: "EP7官方教程",
+                    description: "奥林巴斯官方提供的EP7详细使用指南和拍摄技巧",
+                    link: "https://www.olympus.com.cn/support/"
+                },
+                {
+                    title: "抖音热门教程",
+                    description: `搜索"#${query} #EP7教程"，查看相关拍摄技巧`,
+                    link: "https://www.douyin.com/search?keyword=" + encodeURIComponent(`${query} EP7教程`)
+                },
+                {
+                    title: "小红书摄影社区",
+                    description: "搜索关键词，获取达人分享的详细设置和实战经验",
+                    link: "https://www.xiaohongshu.com/search_result?keyword=" + encodeURIComponent(`${query} EP7`)
+                }
+            ];
+
+            // 根据查询词添加特定推荐
+            if (query.includes('人像')) {
+                baseRecommendations.push({
+                    title: "EP7人像摄影教程",
+                    description: "专业摄影师分享的人像拍摄技巧和相机设置",
+                    link: "https://www.bilibili.com/video/..."
+                });
+            } else if (query.includes('风景')) {
+                baseRecommendations.push({
+                    title: "EP7风光摄影指南",
+                    description: "详细的风光摄影参数设置和构图技巧",
+                    link: "https://www.bilibili.com/video/..."
+                });
+            }
+
+            return baseRecommendations;
+        }
+
+        // 添加回车键触发搜索
+        document.getElementById('queryInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                getSettings();
+            }
+        });
+    </script>
+</body>
+</html> 
