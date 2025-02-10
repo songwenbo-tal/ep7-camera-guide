@@ -8,9 +8,11 @@
         body {
             font-family: 'Microsoft YaHei', sans-serif;
             margin: 0;
-            padding: 40px;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
             background-color: #f5f5f5;
             color: #333;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
         }
 
         .container {
@@ -29,7 +31,7 @@
         }
 
         .search-box {
-            margin: 30px auto;
+            margin: 20px auto;
             display: flex;
             gap: 15px;
             max-width: 800px;
@@ -123,6 +125,7 @@
             gap: 10px;
             margin: 20px auto;
             max-width: 800px;
+            justify-content: center;
         }
 
         .style-tag {
@@ -132,6 +135,7 @@
             border-radius: 20px;
             cursor: pointer;
             transition: all 0.3s;
+            text-align: center;
         }
 
         .style-tag:hover {
@@ -215,39 +219,36 @@
             }
 
             .style-tag {
-                padding: 6px 12px;
+                padding: 8px 12px;
                 font-size: 14px;
-                /* 确保在 iPhone 上点击有反馈 */
-                -webkit-tap-highlight-color: transparent;
+                flex: 0 0 calc(50% - 10px); /* 移动端每行显示两个 */
+                box-sizing: border-box;
             }
 
             /* 优化搜索框在移动端的显示 */
             .search-box {
                 flex-direction: column;
                 gap: 10px;
-                margin: 20px auto;
             }
 
-            input {
+            .search-box input {
                 width: 100%;
-                padding: 12px;
-                font-size: 16px; /* 避免 iOS 自动缩放 */
+                box-sizing: border-box;
             }
 
-            button {
+            .search-box button {
                 width: 100%;
-                padding: 12px;
             }
 
             /* 优化结果显示 */
-            .result-box {
+            .result-box, .manual-result {
+                margin: 15px auto;
                 padding: 15px;
-                margin: 20px auto;
             }
 
             .settings-section, .steps-section, .tips-section {
-                padding: 15px;
-                margin: 15px 0;
+                padding: 12px;
+                margin: 12px 0;
             }
 
             /* 优化推荐资源显示 */
@@ -267,7 +268,7 @@
 
             li {
                 font-size: 14px;
-                margin: 8px 0;
+                margin: 6px 0;
             }
 
             /* 添加安全区域适配 */
@@ -293,7 +294,7 @@
             }
 
             h3 {
-                font-size: 18px;
+                font-size: 16px;
             }
 
             /* 优化分隔线 */
@@ -320,36 +321,169 @@
                 padding-bottom: 60px;
             }
         }
+
+        /* 添加说明书查询相关样式 */
+        .manual-search {
+            margin: 40px auto;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            box-sizing: border-box;
+        }
+
+        .manual-search h2 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .tab-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #dee2e6;
+            overflow-x: auto; /* 允许在小屏幕上滚动 */
+            -webkit-overflow-scrolling: touch; /* 提供更好的移动端滚动体验 */
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            border-bottom: 2px solid #007bff;
+            color: #007bff;
+        }
+
+        .manual-result {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .manual-result .original-text {
+            padding: 15px;
+            background-color: #fff;
+            border-left: 3px solid #007bff;
+            margin-bottom: 20px;
+        }
+
+        .manual-result .simple-steps {
+            line-height: 1.6;
+        }
+
+        @media screen and (max-width: 844px) {
+            .manual-search {
+                margin: 20px 10px;
+                padding: 15px;
+            }
+
+            .tab-container {
+                gap: 10px;
+            }
+
+            .tab {
+                padding: 8px 12px;
+                font-size: 14px;
+                white-space: nowrap;
+            }
+        }
+
+        /* 基础响应式设置 */
+        html {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        /* 适配刘海屏 */
+        @supports (padding-top: constant(safe-area-inset-top)) {
+            body {
+                padding-top: constant(safe-area-inset-top);
+                padding-right: constant(safe-area-inset-right);
+                padding-bottom: constant(safe-area-inset-bottom);
+                padding-left: constant(safe-area-inset-left);
+            }
+        }
+
+        .style-content, .manual-content {
+            margin-top: 20px;
+        }
+
+        .manual-content .intro {
+            margin-bottom: 30px;
+        }
+
+        .tab-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 30px auto;
+            max-width: 800px;
+            border-bottom: 1px solid #dee2e6;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>EP7相机设置助手</h1>
-        <div class="intro">
-            <p>欢迎使用EP7相机设置助手！选择或搜索您想要实现的拍摄效果，获取详细的相机参数设置指南。</p>
+        
+        <!-- 标签切换 -->
+        <div class="tab-container">
+            <div class="tab active" onclick="switchTab('style')">拍摄风格</div>
+            <div class="tab" onclick="switchTab('manual')">说明书查询</div>
         </div>
-        <div class="style-list">
-            <div class="style-tag" onclick="selectStyle('富士风格人像')">富士风格人像</div>
-            <div class="style-tag" onclick="selectStyle('街拍黑白')">街拍黑白</div>
-            <div class="style-tag" onclick="selectStyle('夜景')">夜景</div>
-            <div class="style-tag" onclick="selectStyle('日系胶片')">日系胶片</div>
-            <div class="style-tag" onclick="selectStyle('ins风网红照')">ins风网红照</div>
-            <div class="style-tag" onclick="selectStyle('复古电影感')">复古电影感</div>
-            <div class="style-tag" onclick="selectStyle('美食摄影')">美食摄影</div>
-            <div class="style-tag" onclick="selectStyle('街头潮拍')">街头潮拍</div>
+
+        <!-- 拍摄风格内容 -->
+        <div class="style-content">
+            <div class="intro">
+                <p>欢迎使用EP7相机设置助手！选择或搜索您想要实现的拍摄效果，获取详细的相机参数设置指南。</p>
+            </div>
+            <div class="style-list">
+                <div class="style-tag" onclick="selectStyle('富士风格人像')">富士风格人像</div>
+                <div class="style-tag" onclick="selectStyle('街拍黑白')">街拍黑白</div>
+                <div class="style-tag" onclick="selectStyle('夜景')">夜景</div>
+                <div class="style-tag" onclick="selectStyle('日系胶片')">日系胶片</div>
+                <div class="style-tag" onclick="selectStyle('ins风网红照')">ins风网红照</div>
+                <div class="style-tag" onclick="selectStyle('复古电影感')">复古电影感</div>
+                <div class="style-tag" onclick="selectStyle('美食摄影')">美食摄影</div>
+                <div class="style-tag" onclick="selectStyle('街头潮拍')">街头潮拍</div>
+            </div>
+            <div class="divider">
+                <span>或者</span>
+            </div>
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="queryInput" 
+                    placeholder="输入您想要的拍摄效果关键词"
+                >
+                <button onclick="getSettings()">搜索设置</button>
+            </div>
+            <div id="result" class="result-box"></div>
         </div>
-        <div class="divider">
-            <span>或者</span>
+
+        <!-- 说明书查询内容 -->
+        <div class="manual-content" style="display: none;">
+            <div class="intro">
+                <p>输入您想了解的相机功能或操作问题，获取详细的说明书解答。</p>
+            </div>
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="manualQuery" 
+                    placeholder="请输入您的问题（例如：如何设置连拍模式）"
+                >
+                <button onclick="searchManual()">查询说明书</button>
+            </div>
+            <div id="manualResult" class="manual-result"></div>
         </div>
-        <div class="search-box">
-            <input 
-                type="text" 
-                id="queryInput" 
-                placeholder="输入您想要的拍摄效果关键词"
-            >
-            <button onclick="getSettings()">搜索设置</button>
-        </div>
-        <div id="result" class="result-box"></div>
     </div>
 
     <script>
@@ -659,6 +793,593 @@
         document.getElementById('queryInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 getSettings();
+            }
+        });
+
+        // 添加说明书查询相关函数
+        function switchTab(tab) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const styleContent = document.querySelector('.style-content');  // 拍摄风格相关内容
+            const manualContent = document.querySelector('.manual-content');  // 说明书查询相关内容
+            
+            if (tab === 'manual') {
+                styleContent.style.display = 'none';
+                manualContent.style.display = 'block';
+            } else {
+                styleContent.style.display = 'block';
+                manualContent.style.display = 'none';
+            }
+        }
+
+        // 说明书内容数据
+        const manualContent = {
+            "连拍": {
+                "original": "在P. 46-47页中描述了连拍模式的设置方法：按下jYKN按钮，选择连拍模式图标，使用HI选择所需的连拍速度。",
+                "simple": [
+                    "1. 按下相机右侧的'驱动模式'按钮（标有人像和方框图标）",
+                    "2. 使用方向键选择连拍模式（看起来像多个重叠的方框）",
+                    "3. 选择连拍速度：H表示高速连拍，L表示低速连拍",
+                    "4. 按OK确认设置"
+                ],
+                "tips": "高速连拍适合拍摄快速移动的物体，但可能会影响对焦精度。如果要兼顾速度和准确性，建议使用低速连拍。"
+            },
+            "白平衡": {
+                "original": "在P. 52-53页中介绍了白平衡的调节方法：按下WB按钮，选择合适的白平衡模式。",
+                "simple": [
+                    "1. 按下相机背面的'WB'按钮",
+                    "2. 使用方向键选择适合的白平衡模式",
+                    "3. 自动(AUTO)适合大多数场景",
+                    "4. 晴天(5300K)适合室外阳光下拍摄",
+                    "5. 阴天(6000K)适合阴天或阴影处拍摄",
+                    "6. 按OK确认设置"
+                ],
+                "tips": "如果不确定选择哪种白平衡，建议使用自动白平衡(AUTO)模式，相机会自动判断场景选择合适的白平衡。"
+            },
+            "闪光灯": {
+                "original": "在P. 61-64页中介绍了闪光灯的使用方法：按下闪光灯按钮弹出内置闪光灯，通过超级控制面板可以设置闪光模式。",
+                "simple": [
+                    "1. 按下相机左侧的闪光灯按钮（闪电符号），内置闪光灯会自动弹出",
+                    "2. 按下OK按钮进入超级控制面板",
+                    "3. 选择闪光灯图标（闪电符号）",
+                    "4. 使用方向键选择闪光模式：",
+                    "   - AUTO: 自动闪光",
+                    "   - #: 强制闪光",
+                    "   - $: 防红眼闪光",
+                    "   - SLOW: 慢速同步闪光",
+                    "5. 按OK确认设置"
+                ],
+                "tips": "1. 在弱光环境下建议使用自动闪光\n2. 拍摄人像时可以使用防红眼闪光\n3. 夜景人像可以使用慢速同步闪光\n4. 闪光灯使用范围为0.6-4米，超出范围可能效果不理想"
+            },
+            "关闭闪光灯": {
+                "original": "可以通过以下方式关闭闪光灯：1) 在闪光模式设置中选择关闭图标；2) 手动按下闪光灯收回；3) 在拍摄菜单中设置闪光灯为关闭。",
+                "simple": [
+                    "1. 如果闪光灯已弹出，轻轻按下将其收回",
+                    "2. 或者在超级控制面板中：",
+                    "   - 按OK按钮进入设置",
+                    "   - 选择闪光灯图标",
+                    "   - 选择关闭图标（带斜线的闪电符号）",
+                    "3. 按OK确认设置"
+                ],
+                "tips": "1. 收回闪光灯时请勿用力过大\n2. 某些场景模式下闪光灯会自动弹出\n3. 建议在不需要闪光灯时将其关闭以节省电量"
+            },
+            "闪光补偿": {
+                "original": "在P. 63页描述了闪光补偿的调节方法：通过超级控制面板选择闪光补偿值，可在±3 EV范围内以1/3 EV为单位进行调节。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择闪光补偿图标（±闪电符号）",
+                    "3. 使用方向键调整补偿值：",
+                    "   - 向右增加亮度（+）",
+                    "   - 向左降低亮度（-）",
+                    "4. 按OK确认设置"
+                ],
+                "tips": "1. 拍摄白色主体时可能需要增加补偿值\n2. 拍摄黑色主体时可能需要降低补偿值\n3. 建议先拍摄测试照片再调整补偿值"
+            },
+            "曝光补偿": {
+                "original": "在P. 45页描述了曝光补偿的调节方法：转动前拨盘或按下F(F按钮)后使用十字键进行调节。",
+                "simple": [
+                    "1. 方法一：直接转动相机前方的转盘",
+                    "2. 方法二：",
+                    "   - 按下F按钮（相机背面的上方按钮）",
+                    "   - 使用方向键调整补偿值",
+                    "   - 向右增加曝光（变亮）",
+                    "   - 向左减少曝光（变暗）",
+                    "3. 按OK确认设置"
+                ],
+                "tips": "1. +补偿适合拍摄白色主体\n2. -补偿适合拍摄黑色主体\n3. 可以通过实时取景预览效果"
+            },
+            "ISO感光度": {
+                "original": "在P. 54页介绍了ISO感光度设置：按下ISO按钮后使用十字键选择数值。",
+                "simple": [
+                    "1. 按下ISO按钮（方向键右键）",
+                    "2. 使用方向键选择ISO值：",
+                    "   - LOW: 最低感光度",
+                    "   - 200: 基础感光度",
+                    "   - 400-3200: 根据需要选择",
+                    "   - AUTO: 自动感光度",
+                    "3. 按OK确认"
+                ],
+                "tips": "1. 光线好时使用低ISO\n2. 光线暗时可以提高ISO\n3. AUTO模式下可以设置上限值"
+            },
+            "测光模式": {
+                "original": "P. 50页描述了测光模式的选择方法：通过超级控制面板选择测光模式图标。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择测光模式图标",
+                    "3. 选择合适的模式：",
+                    "   - ESP测光: 适合大多数场景",
+                    "   - 中央重点测光: 适合逆光拍摄",
+                    "   - 点测光: 测定小区域",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 一般场景使用ESP测光\n2. 逆光拍摄用中央重点测光\n3. 特殊场景可以使用点测光"
+            },
+            "对焦模式": {
+                "original": "P. 43-44页介绍了对焦模式的设置：通过超级控制面板选择AF模式。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择AF模式图标",
+                    "3. 可选择以下模式：",
+                    "   - S-AF: 单次自动对焦",
+                    "   - C-AF: 连续自动对焦",
+                    "   - MF: 手动对焦",
+                    "   - S-AF+MF: 自动对焦后可手动微调",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 静物用S-AF\n2. 运动用C-AF\n3. 风光可以用MF"
+            },
+            "对焦点": {
+                "original": "P. 40-42页描述了对焦点的选择方法：按下P(AF目标)按钮后选择对焦点。",
+                "simple": [
+                    "1. 按下P按钮（AF目标选择）",
+                    "2. 使用方向键或转盘选择对焦点",
+                    "3. 可选择单点或多点对焦",
+                    "4. 按OK确认选择"
+                ],
+                "tips": "1. 人像推荐使用面部识别\n2. 静物用单点对焦\n3. 运动主体用多点对焦"
+            },
+            "图像质量": {
+                "original": "P. 56-57页介绍了图像质量的设置：通过超级控制面板选择图像质量模式。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择图像质量图标",
+                    "3. 选择合适的质量模式：",
+                    "   - RAW: 未经处理的原始数据",
+                    "   - YF/YN: 高质量JPEG",
+                    "   - XN: 标准质量JPEG",
+                    "   - RAW+JPEG: 同时记录两种格式",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 重要场景建议使用RAW\n2. 日常拍摄YF就足够\n3. RAW+JPEG适合后期处理"
+            },
+            "相片效果": {
+                "original": "P. 58-60页描述了相片效果的设置：通过超级控制面板选择相片效果模式。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择相片效果图标",
+                    "3. 可选择以下效果：",
+                    "   - i-Enhance: 增强效果",
+                    "   - Vivid: 鲜艳色彩",
+                    "   - Natural: 自然色彩",
+                    "   - Muted: 柔和色彩",
+                    "   - Portrait: 适合人像",
+                    "   - Monotone: 黑白效果",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 风景可用Vivid\n2. 人像用Natural或Portrait\n3. 艺术感可用Monotone"
+            },
+            "防抖设置": {
+                "original": "P. 55页介绍了防抖功能的设置：通过超级控制面板设置防抖模式。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择防抖图标",
+                    "3. 选择防抖模式：",
+                    "   - S-IS AUTO: 自动防抖",
+                    "   - S-IS1: 全方向防抖",
+                    "   - S-IS2: 垂直防抖",
+                    "   - S-IS3: 水平防抖",
+                    "   - OFF: 关闭防抖",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 手持拍摄开启防抖\n2. 使用三脚架时关闭防抖\n3. 全方向防抖适合大多数场景"
+            },
+            "自拍设置": {
+                "original": "P. 46-47页描述了自拍设置：按下jYKN按钮，选择自拍图标。",
+                "simple": [
+                    "1. 按下'驱动模式'按钮",
+                    "2. 选择自拍图标（时钟样式）",
+                    "3. 选择延时时间：",
+                    "   - Y12s: 12秒延时",
+                    "   - Y2s: 2秒延时",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 2秒延时适合减少抖动\n2. 12秒延时适合自拍合影\n3. 可以使用遥控器代替自拍"
+            },
+            "录像模式": {
+                "original": "P. 36-39页介绍了录像模式的设置：将模式转盘转到n位置进入录像模式。",
+                "simple": [
+                    "1. 将模式转盘转到n（动画）位置",
+                    "2. 按OK按钮进入超级控制面板",
+                    "3. 可以设置以下参数：",
+                    "   - 画质：FHD/HD",
+                    "   - 帧率：30p/25p/24p",
+                    "   - 压缩方式：ALL-I/SF/F/N",
+                    "4. 按下录像按钮开始/停止录制"
+                ],
+                "tips": "1. FHD画质适合大多数场景\n2. 30p适合运动场景\n3. 24p适合电影感"
+            },
+            "录像对焦": {
+                "original": "P. 37页描述了录像对焦设置：可选择连续AF或单次AF模式。",
+                "simple": [
+                    "1. 在录像模式下按OK按钮",
+                    "2. 选择AF模式图标",
+                    "3. 可选择：",
+                    "   - C-AF：持续对焦",
+                    "   - S-AF：单次对焦",
+                    "   - MF：手动对焦",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 静态场景用S-AF\n2. 运动场景用C-AF\n3. 专业拍摄建议用MF"
+            },
+            "WIFI连接": {
+                "original": "P. 123-126页介绍了Wi-Fi连接设置：通过OI.Share应用连接相机。",
+                "simple": [
+                    "1. 在相机中开启Wi-Fi功能：",
+                    "   - 按MENU按钮",
+                    "   - 选择设置菜单（齿轮图标）",
+                    "   - 找到Wi-Fi设置并开启",
+                    "2. 在手机上：",
+                    "   - 安装OI.Share应用",
+                    "   - 扫描相机屏幕上的二维码",
+                    "   - 按照应用提示完成连接"
+                ],
+                "tips": "1. 首次连接需要扫码\n2. 后续可以快速连接\n3. 连接后可远程控制相机"
+            },
+            "场景模式": {
+                "original": "P. 32页描述了场景模式的使用：转动模式转盘至SCN，选择适合的场景模式。",
+                "simple": [
+                    "1. 将模式转盘转到SCN位置",
+                    "2. 按OK按钮显示场景菜单",
+                    "3. 选择合适的场景：",
+                    "   - 人像：适合人物拍摄",
+                    "   - 风景：适合自然风光",
+                    "   - 运动：适合动态拍摄",
+                    "   - 夜景：适合夜间拍摄",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 场景模式会自动优化设置\n2. 可以微调参数\n3. 适合新手使用"
+            },
+            "艺术滤镜": {
+                "original": "P. 33页介绍了艺术滤镜模式：转动模式转盘至ART，选择滤镜效果。",
+                "simple": [
+                    "1. 将模式转盘转到ART位置",
+                    "2. 按OK按钮显示滤镜菜单",
+                    "3. 选择滤镜效果：",
+                    "   - 流行艺术：鲜艳色彩",
+                    "   - 柔焦：柔和效果",
+                    "   - 淡色：清淡效果",
+                    "   - 复古：怀旧效果",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 可以实时预览效果\n2. 建议搭配RAW格式\n3. 可以后期调整效果"
+            },
+            "包围曝光": {
+                "original": "P. 92-94页描述了包围曝光设置：可以自动以不同曝光值拍摄多张照片。",
+                "simple": [
+                    "1. 按MENU按钮",
+                    "2. 选择拍摄菜单2",
+                    "3. 选择包围曝光选项",
+                    "4. 设置参数：",
+                    "   - 曝光差异值",
+                    "   - 拍摄张数",
+                    "5. 按OK确认"
+                ],
+                "tips": "1. 适合高对比度场景\n2. 建议使用三脚架\n3. 可用于HDR合成"
+            },
+            "定时拍摄": {
+                "original": "P. 89-91页介绍了定时拍摄功能：可设置间隔时间自动拍摄多张照片。",
+                "simple": [
+                    "1. 按MENU按钮",
+                    "2. 选择拍摄菜单2",
+                    "3. 找到定时拍摄选项",
+                    "4. 设置：",
+                    "   - 拍摄间隔时间",
+                    "   - 总拍摄张数",
+                    "5. 按OK开始"
+                ],
+                "tips": "1. 适合延时摄影\n2. 注意电池电量\n3. 建议使用三脚架"
+            },
+            "拍摄模式": {
+                "original": "P. 27-31页介绍了基本拍摄模式：通过模式转盘选择不同的拍摄模式。",
+                "simple": [
+                    "1. 转动相机顶部的模式转盘，可选择：",
+                    "   - P：程序自动（相机自动设置光圈和快门）",
+                    "   - A：光圈优先（用户控制光圈，相机设置快门）",
+                    "   - S：快门优先（用户控制快门，相机设置光圈）",
+                    "   - M：手动模式（用户完全控制）",
+                    "2. 不同模式下可调整的参数不同"
+                ],
+                "tips": "1. 新手建议使用P模式\n2. 虚化背景用A模式\n3. 拍摄运动用S模式\n4. 专业拍摄用M模式"
+            },
+            "光圈设置": {
+                "original": "P. 28-29页描述了光圈的调节方法：在A模式下转动转盘调节光圈值。",
+                "simple": [
+                    "1. 将模式转盘转到A（光圈优先）",
+                    "2. 转动前拨盘调节光圈值：",
+                    "   - 数值越小（如F1.8）光圈越大，背景更虚化",
+                    "   - 数值越大（如F8.0）光圈越小，画面更清晰",
+                    "3. 通过实时取景可预览效果"
+                ],
+                "tips": "1. 人像推荐使用大光圈\n2. 风景推荐使用小光圈\n3. 注意光圈值会影响景深"
+            },
+            "快门速度": {
+                "original": "P. 30页介绍了快门速度的设置：在S模式下转动转盘调节快门速度。",
+                "simple": [
+                    "1. 将模式转盘转到S（快门优先）",
+                    "2. 转动前拨盘调节快门速度：",
+                    "   - 高速快门（如1/1000秒）冻结动作",
+                    "   - 慢速快门（如1/30秒）产生动感",
+                    "3. 观察取景器中的曝光指示"
+                ],
+                "tips": "1. 运动拍摄用高速快门\n2. 光线暗时注意手抖\n3. 慢门建议用三脚架"
+            },
+            "构图辅助": {
+                "original": "P. 127-128页描述了构图辅助功能：可显示网格线和水平仪。",
+                "simple": [
+                    "1. 按MENU按钮",
+                    "2. 进入自定义菜单",
+                    "3. 选择显示设置：",
+                    "   - 网格显示：辅助构图",
+                    "   - 水平仪：确保水平",
+                    "4. 选择开启需要的功能"
+                ],
+                "tips": "1. 网格线帮助构图\n2. 水平仪确保画面平直\n3. 可以同时开启多个辅助"
+            },
+            "连续对焦追踪": {
+                "original": "P. 43-44页介绍了C-AF+TR模式：可以追踪移动的被摄体。",
+                "simple": [
+                    "1. 按OK进入超级控制面板",
+                    "2. 选择AF模式",
+                    "3. 选择C-AF+TR模式",
+                    "4. 对准要追踪的主体",
+                    "5. 半按快门开始追踪"
+                ],
+                "tips": "1. 适合拍摄运动物体\n2. 确保主体在画面中\n3. 注意追踪可能会断开"
+            },
+            "面部优先": {
+                "original": "P. 48-49页描述了面部优先功能：相机可以自动识别和对焦人脸。",
+                "simple": [
+                    "1. 按MENU按钮",
+                    "2. 找到面部优先AF设置",
+                    "3. 选择开启面部检测",
+                    "4. 可选择是否优先对焦眼睛",
+                    "5. 对准人物即可自动识别"
+                ],
+                "tips": "1. 适合人像拍摄\n2. 可以识别多个人脸\n3. 眼睛对焦更精准"
+            },
+            "高光和阴影控制": {
+                "original": "P. 51页介绍了高光和阴影控制：可以单独调节画面的明暗部分。",
+                "simple": [
+                    "1. 按下F按钮",
+                    "2. 按INFO按钮进入高光阴影控制",
+                    "3. 使用十字键调节：",
+                    "   - 上下调节高光",
+                    "   - 左右调节阴影",
+                    "4. 按OK确认"
+                ],
+                "tips": "1. 适合高反差场景\n2. 可以保护细节\n3. 注意不要过度调整"
+            },
+            "色彩空间": {
+                "original": "P. 65页描述了色彩空间设置：可选择sRGB或Adobe RGB色彩空间。",
+                "simple": [
+                    "1. 按MENU按钮",
+                    "2. 进入拍摄菜单1",
+                    "3. 选择色彩空间",
+                    "4. 可选择：",
+                    "   - sRGB：标准色彩空间",
+                    "   - Adobe RGB：更广色域"
+                ],
+                "tips": "1. 一般使用sRGB\n2. 专业打印用Adobe RGB\n3. 注意显示器兼容性"
+            },
+            "长时间曝光": {
+                "original": "P. 31页介绍了B门和定时拍摄：适用于长时间曝光拍摄。",
+                "simple": [
+                    "1. 将模式转盘转到M",
+                    "2. 将快门速度调至BULB",
+                    "3. 设置：",
+                    "   - B门：按住快门期间持续曝光",
+                    "   - 定时：设定具体曝光时间",
+                    "4. 使用遥控器或自拍避免抖动"
+                ],
+                "tips": "1. 必须使用三脚架\n2. 适合夜景和星轨\n3. 注意长时间曝光噪点"
+            },
+            "光圈限制": {
+                "original": "镜头的最大光圈（最小F值）取决于所使用的镜头。EP7标配的14-42mm F3.5-5.6镜头，在14mm时最大光圈为F3.5，在42mm时最大光圈为F5.6。",
+                "simple": [
+                    "1. 光圈大小受限于使用的镜头",
+                    "2. 标配变焦镜头14-42mm的光圈范围：",
+                    "   - 14mm焦距时：最大光圈F3.5",
+                    "   - 42mm焦距时：最大光圈F5.6",
+                    "   - 中间焦距：光圈值逐渐变化",
+                    "3. 如需更大光圈（更小的F值）：",
+                    "   - 可以使用大光圈定焦镜头",
+                    "   - 如17mm F1.8或45mm F1.8镜头"
+                ],
+                "tips": "1. 想要更大光圈效果，建议购买大光圈定焦镜头\n2. 标配镜头适合日常拍摄和风景\n3. 人像摄影推荐使用F1.8定焦镜头"
+            },
+            "锐度调整": {
+                "original": "P. 59页描述了锐度调整方法：在相片效果设置中可以调节锐度值，范围为-2至+2。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择相片效果图标",
+                    "3. 选择当前使用的相片效果后按INFO按钮",
+                    "4. 使用方向键选择锐度选项",
+                    "5. 调整数值：",
+                    "   - 向右增加锐度（更锐利）",
+                    "   - 向左降低锐度（更柔和）",
+                    "6. 按OK确认设置"
+                ],
+                "tips": "1. 人像建议降低锐度(-1或-2)\n2. 风景可以适当提高锐度(+1)\n3. 可以在实时取景中预览效果"
+            },
+            "对比度调整": {
+                "original": "P. 59页介绍了对比度调整：在相片效果设置中可以调节对比度，范围为-2至+2。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择相片效果图标",
+                    "3. 选择当前使用的相片效果后按INFO按钮",
+                    "4. 使用方向键选择对比度选项",
+                    "5. 调整数值：",
+                    "   - 向右增加对比度（明暗差异更大）",
+                    "   - 向左降低对比度（明暗过渡更柔和）",
+                    "6. 按OK确认设置"
+                ],
+                "tips": "1. 阴天拍摄可以适当提高对比度\n2. 强光环境可以适当降低对比度\n3. 人像建议使用较低对比度"
+            },
+            "画面参数调整": {
+                "original": "P. 58-60页描述了画面参数调整：可以在相片效果设置中调节锐度、对比度、饱和度等参数。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择相片效果图标",
+                    "3. 选择相片效果后按INFO按钮",
+                    "4. 可调整的参数包括：",
+                    "   - 锐度：调整画面清晰度",
+                    "   - 对比度：调整明暗反差",
+                    "   - 饱和度：调整色彩浓度",
+                    "   - 色调：调整整体色调",
+                    "5. 使用方向键选择和调整参数",
+                    "6. 按OK保存设置"
+                ],
+                "tips": "1. 建议根据拍摄场景调整参数\n2. 可以保存自定义设置\n3. RAW格式可以后期调整这些参数"
+            },
+            "色调调整": {
+                "original": "P. 59页描述了色调调整方法：在相片效果设置中可以调节色调，通过调整R（红色）、G（绿色）、B（蓝色）的数值来改变整体色调。",
+                "simple": [
+                    "1. 按OK按钮进入超级控制面板",
+                    "2. 选择相片效果图标",
+                    "3. 选择当前使用的相片效果后按INFO按钮",
+                    "4. 找到色调选项",
+                    "5. 调整参数：",
+                    "   - 增加R值：增加暖色调",
+                    "   - 增加B值：增加冷色调",
+                    "   - 调整G值：微调整体色调",
+                    "6. 按OK确认设置"
+                ],
+                "tips": "1. 人像拍摄建议偏暖色调\n2. 可以通过实时取景预览效果\n3. 建议调整幅度不要太大，保持自然\n4. 也可以通过调整白平衡来改变色调"
+            }
+        };
+
+        function searchManual() {
+            const query = document.getElementById('manualQuery').value.toLowerCase();
+            const resultDiv = document.getElementById('manualResult');
+            
+            // 添加关键词映射
+            const keywordMap = {
+                'a档': '光圈设置',
+                'a模式': '光圈设置',
+                '光圈优先': '光圈设置',
+                '光圈调整': '光圈设置',
+                '调整光圈': '光圈设置',
+                '虚化': '光圈设置',
+                '最小光圈': '光圈限制',
+                '光圈限制': '光圈限制',
+                '相片效果': '相片效果',
+                '图片效果': '相片效果',
+                '照片效果': '相片效果',
+                '自然模式': '相片效果',
+                '自然风格': '相片效果',
+                'natural': '相片效果',
+                '效果设置': '相片效果',
+                '锐度': '锐度调整',
+                '锐度设置': '锐度调整',
+                '对比度': '对比度调整',
+                '对比度设置': '对比度调整',
+                '画面调整': '画面参数调整',
+                '色调': '色调调整',
+                '色调设置': '色调调整',
+                '暖色': '色调调整',
+                '暖色调': '色调调整',
+                '冷色': '色调调整',
+                '色温': '色调调整'
+            };
+            
+            let found = false;
+            // 先检查映射关键词
+            for (const [keyword, contentKey] of Object.entries(keywordMap)) {
+                if (query.includes(keyword) && manualContent[contentKey]) {
+                    const content = manualContent[contentKey];
+                    resultDiv.innerHTML = `
+                        <div class="original-text">
+                            <h3>说明书原文：</h3>
+                            <p>${content.original}</p>
+                        </div>
+                        <div class="simple-steps">
+                            <h3>简单说明：</h3>
+                            <ol>
+                                ${content.simple.map(step => `<li>${step}</li>`).join('')}
+                            </ol>
+                            <div class="tips-section">
+                                <h3>小贴士：</h3>
+                                <p>${content.tips}</p>
+                            </div>
+                        </div>
+                    `;
+                    found = true;
+                    break;
+                }
+            }
+            
+            // 如果没找到，再检查原始内容
+            if (!found) {
+                for (const [key, content] of Object.entries(manualContent)) {
+                    if (query.includes(key)) {
+                        resultDiv.innerHTML = `
+                            <div class="original-text">
+                                <h3>说明书原文：</h3>
+                                <p>${content.original}</p>
+                            </div>
+                            <div class="simple-steps">
+                                <h3>简单说明：</h3>
+                                <ol>
+                                    ${content.simple.map(step => `<li>${step}</li>`).join('')}
+                                </ol>
+                                <div class="tips-section">
+                                    <h3>小贴士：</h3>
+                                    <p>${content.tips}</p>
+                                </div>
+                            </div>
+                        `;
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            
+            if (!found) {
+                resultDiv.innerHTML = `
+                    <p class="error">抱歉，没有找到相关内容。您可以尝试：</p>
+                    <ul>
+                        <li>使用更简单的关键词，如"光圈"、"A档"</li>
+                        <li>查看说明书第28-29页的光圈设置部分</li>
+                        <li>参考以下常用设置：
+                            <ul>
+                                <li>人像拍摄：使用较大光圈（如F1.8-F2.8）</li>
+                                <li>风景拍摄：使用较小光圈（如F8-F11）</li>
+                                <li>日常拍摄：使用中等光圈（如F4-F5.6）</li>
+                            </ul>
+                        </li>
+                    </ul>
+                `;
+            }
+            
+            resultDiv.style.display = 'block';
+        }
+
+        // 为说明书查询输入框添加回车键触发
+        document.getElementById('manualQuery').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchManual();
             }
         });
     </script>
